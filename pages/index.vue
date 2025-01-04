@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Sample Auto deploy.</h1>
+    <h1>Sample Auto deploy..</h1>
   </div>
 </template>
 
