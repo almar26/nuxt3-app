@@ -1,0 +1,7 @@
+services:
+  nuxt3-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - ${PORT}:${PORT}
