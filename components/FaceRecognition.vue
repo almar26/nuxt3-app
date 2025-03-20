@@ -34,7 +34,7 @@ const setupCameras = async () => {
   }
 
   await startVideo(video1.value, webcams[0].deviceId);
-  await startVideo(video2.value, webcams[9].deviceId);
+  await startVideo(video2.value, webcams[1].deviceId);
 };
 
 const detectFaces = async () => {
