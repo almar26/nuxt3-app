@@ -2,13 +2,11 @@
 import * as faceapi from 'face-api.js'
 
 const video = ref(null)
-const video2 = ref(null)
 const isLoading = ref(true)
 
 onMounted(async () => {
-  await loadModels();
-  startWebcam();
-  await setupCameras();
+  await loadModels()
+  startWebcam()
 })
 
 onBeforeUnmount(() => {
@@ -24,32 +22,15 @@ const loadModels = async () => {
   isLoading.value = false
 }
 
-const startWebcam = async (videoElement, deviceId) => {
+const startWebcam = async () => {
   navigator.mediaDevices
-    .getUserMedia({ video: { deviceId } })
+    .getUserMedia({ video: {} })
     .then((stream) => {
       if (video.value) {
-        videoElement.srcObject = stream
+        video.value.srcObject = stream
       }
     })
     .catch((err) => console.error('Error accessing webcam:', err))
-}
-
-const getConnectedWebcams = async () => {
-  const devices = await navigator.mediaDevices.enumerateDevices();
-  return devices.filter((device) => device.kind === "videoinput");
-}
-
-const setupCameras = async () => {
-  const webcams =  await getConnectedWebcams();
-  console.log("Webcams: ", webcams)
-  if (webcams.length < 2) {
-    alert("Two webcams are required!");
-    return;
-  }
-
-  await startWebcam(video.value, webcams[0].deviceId);
-  await startWebcam(video2.value, webcams[9].deviceId);
 }
 
 const stopWebcam = () => {
