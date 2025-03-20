@@ -27,13 +27,14 @@ const getConnectedWebcams = async () => {
 
 const setupCameras = async () => {
   const webcams = await getConnectedWebcams();
+  console.log("Webcams: ", webcams)
   if (webcams.length < 2) {
     alert("Two webcams are required!");
     return;
   }
 
   await startVideo(video1.value, webcams[0].deviceId);
-  await startVideo(video2.value, webcams[1].deviceId);
+  await startVideo(video2.value, webcams[9].deviceId);
 };
 
 const detectFaces = async () => {

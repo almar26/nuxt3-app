@@ -2,11 +2,13 @@
 import * as faceapi from 'face-api.js'
 
 const video = ref(null)
+const video2 = ref(null)
 const isLoading = ref(true)
 
 onMounted(async () => {
-  await loadModels()
-  startWebcam()
+  await loadModels();
+  startWebcam();
+  await setupCameras();
 })
 
 onBeforeUnmount(() => {
@@ -22,15 +24,32 @@ const loadModels = async () => {
   isLoading.value = false
 }
 
-const startWebcam = async () => {
+const startWebcam = async (videoElement, deviceId) => {
   navigator.mediaDevices
-    .getUserMedia({ video: {} })
+    .getUserMedia({ video: { deviceId } })
     .then((stream) => {
       if (video.value) {
-        video.value.srcObject = stream
+        videoElement.srcObject = stream
       }
     })
     .catch((err) => console.error('Error accessing webcam:', err))
+}
+
+const getConnectedWebcams = async () => {
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  return devices.filter((device) => device.kind === "videoinput");
+}
+
+const setupCameras = async () => {
+  const webcams =  await getConnectedWebcams();
+  console.log("Webcams: ", webcams)
+  if (webcams.length < 2) {
+    alert("Two webcams are required!");
+    return;
+  }
+
+  await startWebcam(video.value, webcams[0].deviceId);
+  await startWebcam(video2.value, webcams[9].deviceId);
 }
 
 const stopWebcam = () => {
@@ -65,6 +84,17 @@ const detectFaces = async () => {
 <template>
   <div class="flex flex-col items-center">
     <p v-if="isLoading" class="text-center">Loading Face Recognition Models...</p>
-    <video ref="video" autoplay @play="detectFaces" class="border-2 border-gray-300 rounded"></video>
+    <!-- <video ref="video" autoplay @play="detectFaces" class="border-2 border-gray-300 rounded"></video> -->
+
+    <video ref="video" autoplay @play="detectFaces" class="w-1/2 border"></video>
+    <video ref="video2" autoplay @play="detectFaces" class="w-1/2 border"></video>
   </div>
 </template>
+
+<style scoped>
+video {
+  width: 400px;
+  height: 300px;
+  border: 2px solid #000;
+}
+</style>
